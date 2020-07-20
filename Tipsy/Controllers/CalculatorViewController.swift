@@ -51,30 +51,20 @@ class CalculatorViewController: UIViewController {
         default:
             print("tipChanged() -> Could not find corresponding tip (sender.currentTitle). ;")
         }
-        
-        print("tipChanged() -> selectedTip = \(selectedTip ?? -1) ;" )
     }
     
     @IBAction func stepperChanged(_ sender: UIStepper) {
         billTextField.endEditing(true)
-        splitNumber = Int(sender.value)
-        splitNumberLabel.text = String(splitNumber ?? 2)
-        print("stepperChanged() -> splitNumber = \(splitNumber ?? 2) ;")
-        print("stepperChanged() -> splitNumberLabel.text = \(splitNumberLabel.text!) ;")
+        calculatorBrain.splitNumber = Int(sender.value)
+        splitNumberLabel.text = calculatorBrain.getSplitNumber()
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
-        billTotal = Float(billTextField.text!)
-        print("calculatePressed() -> billTotal = \(billTotal ?? -1) ;" )
-        print("calculatePressed() -> selectedTip = \(selectedTip ?? -1) ;" )
-        print("calculatePressed() -> splitNumber = \(splitNumber ?? 2) ;" )
+        calculatorBrain.billTotal = Float(billTextField.text!)
         
         let billTotalWithTip = (billTotal ?? 0.0) + ((billTotal ?? 0.0) * (selectedTip ?? 0.0))
-        print("calculatePressed() -> billTotalWithTip = \(billTotalWithTip) ;" )
         calculatedPerPerson = billTotalWithTip / Float(splitNumber ?? 2)
-        
-        print("calculatePressed() -> calculatedPerPerson = \(String(format:"%.2f", calculatedPerPerson!)) ;" )
-        
+                
         self.performSegue(withIdentifier: "showResults", sender: self)
     }
     
