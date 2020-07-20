@@ -13,14 +13,14 @@ class ResultsViewController: UIViewController {
     var billTotal:Float?
     var selectedTip:Float?
     var splitNumber:Int?
-    var calculatedPerPerson:Float?
+    var perPersonTotal:Float?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         
-        totalLabel.text = String(format:"%.2f", calculatedPerPerson ?? 0.0)
+        totalLabel.text = String(format:"%.2f", perPersonTotal ?? 0.0)
         adviceLabel.text = "Split between \(splitNumber ?? 2) people, with \((selectedTip ?? 0.0) * 100)% tip."
     }
     

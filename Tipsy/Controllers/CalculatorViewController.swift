@@ -10,6 +10,9 @@ import UIKit
 
 class CalculatorViewController: UIViewController {
 
+    /* Reference to the Model */
+    var calculatorBrain = CalculatorBrain()
+    
     
     /* Text Fields */
     @IBOutlet weak var billTextField: UITextField!
@@ -22,49 +25,40 @@ class CalculatorViewController: UIViewController {
     /* Labels */
     @IBOutlet weak var splitNumberLabel: UILabel!
     
-    var billTotal:Float?
-    var selectedTip:Float?
-    var splitNumber:Int?
-    var calculatedPerPerson:Float?
     
     
     /* IB Actions */
     
     @IBAction func tipChanged(_ sender: UIButton) {
+        // Deselect all three buttons and select only the one that the user touched.
         zeroPctButton.isSelected = false
         tenPctButton.isSelected = false
         twentyPctButton.isSelected = false
-        
         sender.isSelected = true
         
-        billTextField.endEditing(true)
-        
-        print("tipChanged() -> sender.currentTitle = \(sender.currentTitle ?? "nil") ;" )
-        
+        billTextField.endEditing(true) // To dismiss keyboard.
+                
         switch sender.currentTitle {
         case "0%":
-            selectedTip=0.0
+            calculatorBrain.selectedTip=0.0
         case "10%":
-            selectedTip=0.10
+            calculatorBrain.selectedTip=0.10
         case "20%":
-            selectedTip=0.20
+            calculatorBrain.selectedTip=0.20
         default:
             print("tipChanged() -> Could not find corresponding tip (sender.currentTitle). ;")
         }
     }
     
     @IBAction func stepperChanged(_ sender: UIStepper) {
-        billTextField.endEditing(true)
+        billTextField.endEditing(true) // To dismiss keyboard.
         calculatorBrain.splitNumber = Int(sender.value)
-        splitNumberLabel.text = calculatorBrain.getSplitNumber()
+        splitNumberLabel.text = String(calculatorBrain.getSplitNumber())
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
         calculatorBrain.billTotal = Float(billTextField.text!)
-        
-        let billTotalWithTip = (billTotal ?? 0.0) + ((billTotal ?? 0.0) * (selectedTip ?? 0.0))
-        calculatedPerPerson = billTotalWithTip / Float(splitNumber ?? 2)
-                
+                        
         self.performSegue(withIdentifier: "showResults", sender: self)
     }
     
@@ -72,10 +66,10 @@ class CalculatorViewController: UIViewController {
         if segue.identifier == "showResults" {
             let destinationVC = segue.destination as! ResultsViewController
             
-            destinationVC.billTotal = billTotal
-            destinationVC.selectedTip = selectedTip
-            destinationVC.splitNumber = splitNumber
-            destinationVC.calculatedPerPerson = calculatedPerPerson
+            destinationVC.billTotal = calculatorBrain.billTotal
+            destinationVC.selectedTip = calculatorBrain.selectedTip
+            destinationVC.splitNumber = calculatorBrain.splitNumber
+            destinationVC.perPersonTotal = calculatorBrain.calculatePerPersonTotal()
         }
     }
     
